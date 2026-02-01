@@ -1,0 +1,5 @@
+#!ipxe
+
+echo Hello world from ${cwuri}
+shell
+

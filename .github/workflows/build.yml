@@ -1,0 +1,87 @@
+name: Build
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Configure
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Check out code
+        uses: actions/checkout@v6
+
+      - name: Get token
+        id: token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.ARTIFACT_READER_ID }}
+          private-key: ${{ secrets.ARTIFACT_READER_KEY }}
+          owner: ${{ vars.CODE_REPO_OWNER }}
+          repositories: ${{ vars.CODE_REPO_NAME }}
+
+      - name: Identify run
+        id: run_id
+        env:
+          GH_REPO: ${{ vars.CODE_REPO_OWNER }}/${{ vars.CODE_REPO_NAME }}
+          GH_TOKEN: ${{ steps.token.outputs.token }}
+        run: |
+          run_id=$(gh run list \
+              --branch master \
+              --workflow build.yml \
+              --event push \
+              --status success \
+              --limit 1 \
+              --json databaseId \
+              --jq '.[0].databaseId')
+          echo "run_id=${run_id}" >> "${GITHUB_OUTPUT}"
+
+      - name: Download
+        uses: actions/download-artifact@v7
+        with:
+          repository: ${{ vars.CODE_REPO_OWNER }}/${{ vars.CODE_REPO_NAME }}
+          github-token: ${{ steps.token.outputs.token }}
+          run-id: ${{ steps.run_id.outputs.run_id }}
+          path: artifacts
+          pattern: '{bin,bin-*}'
+
+      - name: List
+        run: |
+          find artifacts -type f
+
+      - name: Build
+        run: |
+          make SRCDIR=artifacts
+
+      - name: Flatten
+        run: |
+          rsync -avL output/ pages/ --exclude=.gitignore
+
+      - name: Upload
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: pages
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs:
+      - build
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+
+      - name: Deploy
+        id: deploy
+        uses: actions/deploy-pages@v4
