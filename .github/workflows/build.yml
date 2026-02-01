@@ -3,6 +3,11 @@ name: Build
 on:
   push:
   workflow_dispatch:
+    inputs:
+      run_id:
+        description: "Run ID from which to obtain artifacts"
+        type: string
+        required: false
 
 jobs:
 
@@ -29,6 +34,7 @@ jobs:
 
       - name: Identify run
         id: run_id
+        if: inputs.run_id == ''
         env:
           GH_REPO: ${{ vars.CODE_REPO_OWNER }}/${{ vars.CODE_REPO_NAME }}
           GH_TOKEN: ${{ steps.token.outputs.token }}
@@ -48,7 +54,7 @@ jobs:
         with:
           repository: ${{ vars.CODE_REPO_OWNER }}/${{ vars.CODE_REPO_NAME }}
           github-token: ${{ steps.token.outputs.token }}
-          run-id: ${{ steps.run_id.outputs.run_id }}
+          run-id: ${{ inputs.run_id || steps.run_id.outputs.run_id }}
           path: artifacts
           pattern: '{bin,bin-*}'
 
