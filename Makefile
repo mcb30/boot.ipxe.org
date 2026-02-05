@@ -13,6 +13,7 @@ STATIC_FILES		+= demo/index.html
 BIN_FILES		+= bin/ipxe.lkrn
 BIN_FILES		+= bin/ipxe.pxe
 BIN_FILES		+= bin/undionly.kpxe
+BIN_FILES		+= bin/niclist.txt
 
 BIN_COMBI_FILES		+= bin-combi/ipxe.iso
 BIN_COMBI_FILES		+= bin-combi/ipxe.usb
