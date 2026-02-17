@@ -127,4 +127,5 @@ $(OUTPUTS_BIN_OTHER) : output/% : $(SRCDIR)/bin-%
 
 $(INDEX_DYNAMIC) : output/% : $(ALL_OUTPUTS)
 	( cd $(dir $@) ; \
-	  tree -H "." --filesfirst -I index.html -o index.html )
+	  tree -H "." -C -T "iPXE files" --filesfirst \
+               -I index.html -o index.html )
