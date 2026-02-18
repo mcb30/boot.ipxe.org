@@ -64,6 +64,9 @@ BIN_OTHER_FILES		+= bin-x86_64-pcbios/ipxe.lkrn
 BIN_OTHER_FILES		+= bin-x86_64-pcbios/ipxe.pxe
 BIN_OTHER_FILES		+= bin-x86_64-pcbios/undionly.kpxe
 
+SHIM_FILES		+= shim/shimaa64.efi
+SHIM_FILES		+= shim/shimx64.efi
+
 ERROR_FILES		+= bin/errors
 ERROR_FILES		+= bin-arm32-efi/errors
 ERROR_FILES		+= bin-arm32-linux/errors
@@ -88,12 +91,14 @@ OUTPUTS_STATIC		:= $(patsubst %,output/%,$(STATIC_FILES))
 OUTPUTS_BIN		:= $(patsubst bin/%,output/%,$(BIN_FILES))
 OUTPUTS_BIN_COMBI	:= $(patsubst bin-combi/%,output/%,$(BIN_COMBI_FILES))
 OUTPUTS_BIN_OTHER	:= $(patsubst bin-%,output/%,$(BIN_OTHER_FILES))
+OUTPUTS_SHIM		+= $(patsubst shim/%,output/%,$(SHIM_FILES))
 
 ALL_OUTPUTS		+= $(OUTPUTS_SPECIAL)
 ALL_OUTPUTS		+= $(OUTPUTS_STATIC)
 ALL_OUTPUTS		+= $(OUTPUTS_BIN)
 ALL_OUTPUTS		+= $(OUTPUTS_BIN_COMBI)
 ALL_OUTPUTS		+= $(OUTPUTS_BIN_OTHER)
+ALL_OUTPUTS		+= $(OUTPUTS_SHIM)
 
 INDEX_DIRS		:= $(sort $(foreach X,$(ALL_OUTPUTS),$(dir $(X))))
 INDEX_FILES		:= $(patsubst %/,%/index.html,$(INDEX_DIRS))
@@ -123,6 +128,9 @@ $(OUTPUTS_BIN_COMBI) : output/% : $(SRCDIR)/bin-combi/%
 	ln -sf $(realpath $<) $@
 
 $(OUTPUTS_BIN_OTHER) : output/% : $(SRCDIR)/bin-%
+	ln -sf $(realpath $<) $@
+
+$(OUTPUTS_SHIM) : output/% : $(SRCDIR)/shim/%
 	ln -sf $(realpath $<) $@
 
 $(INDEX_DYNAMIC) : output/% : $(ALL_OUTPUTS)

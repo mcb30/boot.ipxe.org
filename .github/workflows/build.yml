@@ -56,7 +56,7 @@ jobs:
           github-token: ${{ steps.token.outputs.token }}
           run-id: ${{ inputs.run_id || steps.run_id.outputs.run_id }}
           path: artifacts
-          pattern: '{bin,bin-*}'
+          pattern: '{bin,bin-*,shim}'
 
       - name: List
         run: |
