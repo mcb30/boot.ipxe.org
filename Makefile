@@ -15,6 +15,7 @@ BIN_FILES		+= bin/ipxe.pxe
 BIN_FILES		+= bin/ipxe-legacy.lkrn
 BIN_FILES		+= bin/ipxe-legacy.pxe
 BIN_FILES		+= bin/undionly.kpxe
+BIN_FILES		+= bin/version.txt
 BIN_FILES		+= bin/niclist.txt
 
 BIN_COMBI_FILES		+= bin-combi/ipxe.iso
