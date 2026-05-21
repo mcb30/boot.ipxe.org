@@ -18,16 +18,16 @@ jobs:
 
       - name: Configure
         id: pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
       - name: Check out code
         uses: actions/checkout@v6
 
       - name: Get token
         id: token
-        uses: actions/create-github-app-token@v2
+        uses: actions/create-github-app-token@v3
         with:
-          app-id: ${{ vars.ARTIFACT_READER_ID }}
+          client-id: ${{ vars.ARTIFACT_READER_ID }}
           private-key: ${{ secrets.ARTIFACT_READER_KEY }}
           owner: ${{ vars.CODE_REPO_OWNER }}
           repositories: ${{ vars.CODE_REPO_NAME }}
@@ -76,7 +76,7 @@ jobs:
           rsync -avL output/ pages/ --exclude=.gitignore
 
       - name: Upload
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: pages
 
@@ -95,4 +95,4 @@ jobs:
 
       - name: Deploy
         id: deploy
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
