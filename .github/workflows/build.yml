@@ -56,10 +56,11 @@ jobs:
           github-token: ${{ steps.token.outputs.token }}
           run-id: ${{ inputs.run_id || steps.run_id.outputs.run_id }}
           path: artifacts
-          pattern: '{bin,bin-*,shim,version}'
+          pattern: '{bin-*,shim,version}'
 
       - name: Rearrange
         run: |
+          ln -s bin-x86_64-pcbios artifacts/bin
           mv artifacts/version/* artifacts/bin/
           rmdir artifacts/version
 
